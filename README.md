@@ -8,9 +8,19 @@ Final Project of Intro to CS
 
      DPLL是一種基於回溯的演算法，此算法會嘗試每種可能的賦值，直到找到一組為true賦值為止。而DPLL可以利用單位傳播(Unit Propagation)步驟來進行更有效率的猜測，從而減小搜索樹的大小，可視為一種剪枝策略。在求解的過程中，如果我們發現某個子句的真值為真，就刪除這個子句;如果發現某個文字的真值為假，就在子句中刪除這個變量。直到CNF為空，說明所有子句都滿足了，即該CNF是可滿足的;如果發現CNF中有一個空子句沒有被刪除，說明這個子句的所有文字取值都為假，即這個子句無法滿足，此CNF無法滿足。
    * Pseudo Code
-  
-     ```c++
-     
+
+      ```C++
+      DPLL(CNF):
+          while CNF含有單位子句（clause）:
+              對該CNF使用單位傳播（Unit Propagation）;
+          if CNF為空:
+              return true;
+          else if CNF有空子句:
+              return false;
+          else: // 仍不能確定CNF的值，需要對更多的變量賦值
+              找到CNF中下一個沒有被賦值的變量（或literal）;
+              return DPLL(CNF中這個變量為真) || DPLL(CNF中這個變量為假);
+         
    * Unit Propagation
 
      如果一個CNF包含一個單位子句L(只有一个文字的子句)，那麼該CNF中的其他子句就可以被L化簡，包括下列兩個步驟:
@@ -23,6 +33,20 @@ Final Project of Intro to CS
 
      <img width="210" alt="截圖 2024-02-26 上午12 32 11" src="https://github.com/jeannie068/SAT-Solver/assets/124335771/ba9bb1bd-6d20-4e71-b61e-ac7e40da901f">
 3. 程式碼執行
+   * 工作站
+   
+      此次Final Project 使用工作站執行，首先需使用指令編譯。我的main函式輸入使用到argc、argv兩個參數，argc用來計算argv內有幾個引數 (argument)，argv[] 代表 argument Vector 表示存放參數的向量，也就是陣列的指標，讀取到工作站指令，因此argv[0]儲存檔案名Final.out、argv[1]儲存testcase1.cnf 輸入檔、argv[2]儲存testcase1.txt輸出檔。
+   * 資料結構
+
+     我先開一枚舉資料型態CAT，來儲存DPLL執行的結果型態，使用枚舉型態是因 為可以用文字名稱代替常數值，方便可讀性。
+     再來我創建class型態的Formula，用來儲存literal、clause，literals_frequency及 literal_polarity則作為後續方便進行DLIS而開的計算空間。
+     最後我創建class型態的SATSolverDPLL，用來方便進行演算法時函式及變數間互 相快速調用。
+   * Unit Propagation & Pure Literal Assign
+
+     首先判斷CNF中還有沒有空子句，無的話則直接回傳CNF可滿足，還有則利用 do-while迴圈執行Unit Propagation及Pure Literal Assign化簡程序。
+   * DPLL
+
+     如前面section提到的DPLL Pseudo Code，其中第171後的for迴圈即為執行DLIS 程序。
 ## Completion of this assignment
 我完成了實作DPLL演算法解決SAT問題，其中演算法內包含了Unit propagation、 Pure Literal Assign、DLIS等程序，並成功使用工作站輸出與參考檔案一樣的格式及解答。
 ## 待進步的地方
