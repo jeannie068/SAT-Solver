@@ -26,7 +26,29 @@ Final Project of Intro to CS
 ## Completion of this assignment
 我完成了實作DPLL演算法解決SAT問題，其中演算法內包含了Unit propagation、 Pure Literal Assign、DLIS等程序，並成功使用工作站輸出與參考檔案一樣的格式及解答。
 ## 待進步的地方
-此次多方查找資料時，發現CDCL(Conflict-Driven Clause Learning)演算法更為快 速，其原理是在DPLL上更進一步延伸，使用DPLL時有時候錯誤早已出現，但其程 序只能回溯一層。CDCL就進一步優化，使用了非時序性回溯，能根據衝突來進行 更高的回溯，結果來看大大提升了SAT的執行效率。以下為CDCL演算法的Pseudo Code(來源:https://blog.csdn.net/qaqwqaqwq/article/details/126020807)，但可惜我在此次作業中沒有實作出來，因此我認為我的程式還可以再進一步優化成 CDCL演算法。
+此次多方查找資料時，發現CDCL(Conflict-Driven Clause Learning)演算法更為快 速，其原理是在DPLL上更進一步延伸，使用DPLL時有時候錯誤早已出現，但其程 序只能回溯一層。CDCL就進一步優化，使用了非時序性回溯，能根據衝突來進行 更高的回溯，結果來看大大提升了SAT的執行效率。以下為CDCL演算法的Pseudo Code(來源:https://blog.csdn.net/qaqwqaqwq/article/details/126020807) ，但可惜我在此次作業中沒有實作出來，因此我認為我的程式還可以再進一步優化成 CDCL演算法。
+```C++
+CDCL(CNF):
+     副本 = CNF // 創建CNF的副本，不更改原CNF
+     while true:
+         while 副本含有單位子句:
+             對副本使用單位傳播;
+         if 副本中含有取值為假的子句: // 發現衝突
+             if 現在的決策層是0:
+                 return false; // 不能滿足
+             C = 子句學習(CNF, 副本) // 吸取教訓
+             根據C回到一個更早的決策層; // 調整策略
+         else:
+             if 所有變量都被賦值:
+                 return true; // 可滿足
+             else: // 進行一次決策（決策就是一次嘗試，令某個文字為真，撞大運）
+                 開始一個新的決策層;
+                 找到一個未賦值的文字l;
+                 副本 = 副本∧{l}
+                 // 給l賦值為真
+                 // 加入l構成的單位子句，使得副本要滿足就是l要滿足，變相地要求l為真
+                 // 對於變量x，若給x賦值為真，就令l = x；若給x賦值為假，就令l = ¬x
+```
 ## Reference
 * 想法、觀念參考 :
   https://cse442-17f.github.io/Conflict-Driven-Clause-Learning/
